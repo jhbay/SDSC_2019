@@ -38,7 +38,7 @@ def readCsvByLine(csvFilePath):
                 # print(f'\t{row[0]} works in the {row[1]} department, and was born in {row[2]}.')
                 line_count += 1
 
-breakInt = 0
+breakInt = 0 
 # my_data = readCsvNumpy('./Omega-Fats.csv')
 # my_data = readCsvOneLine('./Omega-Fats.csv')
 df = readCsvPandas('./Omega-Fats.csv')
