@@ -1,6 +1,13 @@
 관리> 키보드 shortcut  - ctrl+D, ctrl+alt+Down. 조정.
 
 깃허브연동 - https://evols-atirev.tistory.com/14
-
-
+1. git-scm 설치.
+2. git workspace 지정.
+3. src stage + commit.
+3. git terminal: 사용자설정
+    git config --global user.name "이름" 
+    git config --global user.email "이메일"
+4. repository 연동.
+    git remote add origin (github 복사한링크)
+    git push -u origin master  // + github 로그인.
 
