@@ -11,3 +11,6 @@
     git remote add origin (github 복사한링크)
     git push -u origin master  // + github 로그인.
 
+5. setting >  git.postCommitCommand
+
+
