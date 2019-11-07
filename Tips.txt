@@ -1,6 +1,7 @@
 관리> 키보드 shortcut  - ctrl+D, ctrl+alt+Down. 조정.
 
 깃허브연동 - https://evols-atirev.tistory.com/14
+깃허브 초보마스터 - https://nolboo.kim/blog/2013/10/06/github-for-beginner/
 1. git-scm 설치.
 2. git workspace 지정.
 3. src stage + commit.
