@@ -3,3 +3,20 @@
 행복사: alt + shift + Down
 
 파이선 실행: 우클릭 - run python terminal
+관리> 키보드 shortcut  - ctrl+D, ctrl+alt+Down. 조정.
+
+깃허브연동 - https://evols-atirev.tistory.com/14
+깃허브 초보마스터 - https://nolboo.kim/blog/2013/10/06/github-for-beginner/
+1. git-scm 설치.
+2. git workspace 지정.
+3. src stage + commit.
+3. git terminal: 사용자설정
+    git config --global user.name "이름" 
+    git config --global user.email "이메일"
+4. repository 연동.
+    git remote add origin (github 복사한링크)
+    git push -u origin master  // + github 로그인.
+
+5. setting >  git.postCommitCommand
+
+
