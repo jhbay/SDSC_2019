@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from urllib.robotparser import RobotFileParser
 from nose.tools import assert_equal, assert_raises
 # from pymongo import MongoClient
-
+import time
 
 # try:
 #     imports = [requests, BeautifulSoup, RobotFileParser, assert_equal, assert_raises, json
@@ -15,6 +15,13 @@ from nose.tools import assert_equal, assert_raises
 #     raise AssertionError('You appear to be missing one of the required libraries or functions')
 # assert True
 # print('Successfully imported libraries and functions')
+
+def startTime():
+    return time.time()  # 시작 시간 저장
+
+def endTime(msg, sTime):
+    print('msg: ', msg, " // time :", time.time() - sTime)  # 현재시각 - 시작시간 = 실행 시간
+
 
 def get_establishment_by_id(id):
     # YOUR CODE HERE
@@ -80,59 +87,6 @@ def quiz1b():
 
 # 1.3
 
-html = """
-    <div id="main" class="classy">
-        <h1>The Main Content of the Document</h1>
-        
-        <p>This is some content inside a &lt;p&gt; tag.  It is normal writing.  It can contain other tags
-        within it.  For example, to emphasise a word I would use <em>the &lt;em&gt; tag</em>, or to move
-        onto a new ine I could use the &lt;br /&gt; tag.
-        </p>
-        
-        <table>
-            <tr>
-                <th>Table heading cell</th><th>Another heading</th>
-            </tr>
-            <tr>
-                <td>Normal table cell</td><td>This cell has a link going <a href="#">Somewhere</a></td>
-            </tr>
-        </table>
-    
-    </div>
-"""
-
-def checkUrlStatus(url):
-    try:
-        statusCode = str(requestUrl(url).status_code)
-        print("checkUrlStatus :: " + statusCode) 
-        return statusCode
-    except NotImplementedError as e:
-        # print(e)
-        raise NotImplementedError()
-    
-# checkUrlStatus('http://138.68.148.20/data/west_midlands/cannock_chase') #Valid 200
-# checkUrlStatus('http://138.68.148.20/west_midlands/cannock_chase') # None
-
-def checkParsableUrl(code):
-    # only request valid - 200
-    if(code == '200' or code == 'True' or code == True):
-        return True
-    # else : False
-    return None
-
-def beautifulSoupParseXml(url):
-    try:
-        retDict = {}
-        soup = BeautifulSoup(requestUrlXmlType(url), 'xml') 
-        # print("first_business :: "  + str(soup.findAll('EstablishmentDetail')[0].find('BusinessName').string) )
-        # print("amount_of_records :: "  + str(soup.find('ItemCount').string))
-        retDict["first_business"] = str(soup.findAll('EstablishmentDetail')[0].find('BusinessName').string)
-        retDict["amount_of_records"] = int(soup.find('ItemCount').string)
-        print("parse_xml retDict::" + str(retDict) )
-        return retDict
-    except NotImplementedError as e:
-        # print(e)
-        raise NotImplementedError()
 
 def parse_xml(url):
     """
@@ -141,54 +95,67 @@ def parse_xml(url):
     You may use any of Python's core libraries, or other libraries installed if you wish rather than BeautifulSoup
     """
     # YOUR CODE HERE 
-    # robotStatus = check_robots(url)
-    # reqStatus = checkUrlStatus(url) 
-    #check robots.txt
-    if(checkParsableUrl(check_robots(url))):
-        print("robotStatus parsable :: " + str(checkParsableUrl(check_robots(url))))
+    # 로봇유효성 확인- robots.txt // True / False(None)
+    if(check_robots(url)):
         
-        if(checkParsableUrl(checkUrlStatus(url))):
-            print("reqStatus parsable :: " + str(checkParsableUrl(checkUrlStatus(url))))
-            retDict = beautifulSoupParseXml(url)
+        # url request 유효성 확인 
+        urlHeads={
+        'x-api-version':'2',
+        'content-type':'application/xml'
+        }
+        requestStatus = requests.get(url, headers=urlHeads).status_code # 200 / 404(None)
+        if(requestStatus == 200 ):
+            # 답안 dictionary 생성.
+            retDict = {}
+            xmlHeads={
+                'x-api-version':'2',
+                'content-type': 'application/xml'
+                , "Range": "bytes=0-1000" # xml의 부분만을 추출하기에 시간단축에 도움이 된다. 평균 36초 -> 6초.
+            }
+            # xml 형태로 반환 받아 크롤링. 시간 다소소요.(평균 36s)
+            soup = BeautifulSoup(requests.get(url, headers=xmlHeads).text , 'xml') 
+            retDict["first_business"] = str(soup.findAll('EstablishmentDetail')[0].find('BusinessName').string)
+            retDict["amount_of_records"] = int(soup.find('ItemCount').string)
         else:
-            print('Result: None')
+            # url request 가 404 인경우 None 반환
             retDict = None 
     else:
-        print('Result: None')
+        # 로봇유효성이 False 인경우 None 반환
         retDict = None 
     return retDict
 
 
+
+
 def quiz1c():
-    parse_xml("http://138.68.148.20/data/west_midlands/cannock_chase")
-    # parse_xml("http://138.68.148.20/data/scotland/clackmannanshire")  
-    del requests 
-    parse_xml('http://138.68.148.20/data/scotland/glasgow_city')
-    parse_xml('http://138.68.148.20/data/scotland/clackmannanshire')
-    #assert
+    # You don't need to write anything here
+    # Confirm that the function calls the check_robots function
+    sTime = startTime()
     parse_xml('http://138.68.148.20/data/west_midlands/cannock_chase')
-    parse_xml('http://138.68.148.20/data/wales/swansea')
-    parse_xml('http://138.68.148.20/data/calderdale') # None.
+    endTime('cannock_chase test',sTime)
 
 
+    # tmp_requests = requests
+    # del requests
+    # parse_xml('http://138.68.148.20/data/scotland/glasgow_city')
+    # parse_xml('http://138.68.148.20/data/scotland/clackmannanshire')
 
-
-
+    sTime = startTime()
+    assert_equal(parse_xml('http://138.68.148.20/data/west_midlands/cannock_chase'), {'amount_of_records': 731, 'first_business': '1st Choice Pizza/Fish & Chips'})
+    endTime('assert cannock_chase - ',sTime)
+    sTime = startTime()
+    assert_equal(parse_xml('http://138.68.148.20/data/wales/swansea'), {'amount_of_records': 1700, 'first_business': '360 Beach and Watersports Centre'})
+    endTime('assert swansea - ',sTime)
+    # TEST HANDLING 404
+    sTime = startTime()
+    assert_equal(parse_xml('http://138.68.148.20/data/calderdale'), None)
+    endTime('assert calderdale - ',sTime)
+    print('All test successfully passed')
 
 
 
 # quiz1a();
 # quiz1b()
 quiz1c()
-
-
-
-
-
-
-
-
-
-
 
 
