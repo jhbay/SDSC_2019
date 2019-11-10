@@ -1,3 +1,8 @@
+단축키 -- https://demun.github.io/vscode-tutorial/shortcuts/
+행삭제: ctrl + shift + k
+행복사: alt + shift + Down
+
+파이선 실행: 우클릭 - run python terminal
 관리> 키보드 shortcut  - ctrl+D, ctrl+alt+Down. 조정.
 
 깃허브연동 - https://evols-atirev.tistory.com/14
