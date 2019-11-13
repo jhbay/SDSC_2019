@@ -10,4 +10,6 @@ print(dict['name'])
 print("git init test")
 
 
+for i in range(0,5):
+    print('i:', i)
 
